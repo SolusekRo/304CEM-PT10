@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.0.min.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Shop Homepage - Start Bootstrap Template</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="css/grayscale.min.css" rel="stylesheet">
+</head>
+
+<script>
+  
+$(document).ready(function(){
+
+var key=localStorage.getItem("login");
+
+if(key==null){
+
+alert("Please Login");
+
+location.href="http://127.0.0.1:9999/kk";
+
+return;
+
+}
+
+$(".loginID").html("User: "+localStorage.getItem("login"));
+
+ if ("geolocation" in navigator) {
+    //get current location
+    navigator.geolocation.getCurrentPosition(showcityname);
+
+    function showcityname(position) {
+      var lat = position.coords.latitude;
+      var longit = position.coords.longitude;     
+      var city_name;
+      var temp;
+      var pressure;
+      var wind_speed;
+      var country_name;
+      var weather_description;
+      //var apiKey = "5dd765a29b95b2e058dfd9f33a1dbd0d";
+	  var apiKey = "afec5c382947b33cdc77bad960dc1a16";      
+
+	  // call openweather api to retreive weather information of the current location
+      $.getJSON("http://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + longit + "&appid=" + apiKey, function(data) {
+	  
+        city_name = data["name"];
+        country_name = data["sys"]["country"];
+        weather_description = data["weather"][0]["description"];
+        temp = data["main"]["temp"]-273.15;
+		pressure = data["main"]["pressure"];
+        wind_speed = data["wind"]["speed"];
+		
+		$("#cityname").html(country_name + " has " + weather_description);
+        $(".temp").html("Tempature is "+ temp.toFixed(2) + " &#8451");
+        $(".pressure").html("Pressure is " + pressure + " mBar");
+        $(".wind-spd").html("Wind speed is " + wind_speed + " m/s");
+		
+      })
+
+    }
+
+  }
+
+//addfav
+
+$(".addfav").click(function(){
+				
+		var login=localStorage.getItem("login");
+		var id=localStorage.getItem("id");
+		var fav1=$(this).val();
+		var favitem=["Zero","One","Two","Three","four","Five","Six"];
+		var mydata="&email="+login+"&FavID="+fav1+"&Favourite=Item "+favitem[fav1]+"&id="+id;
+		
+		
+		
+		$.ajax({
+		
+            type: 'POST',
+           url: 'http://127.0.0.1:9999/addFav',
+			dataType:"text",
+			data:mydata,
+			success: function(data) {	
+			
+            },
+            error: function(xhr, status, error) {
+                console.log('Error: ' + error.message);
+           }
+        });
+		
+		alert("Item added into the Cart");
+});
+
+//logoff
+$("#logoff").click(function(){
+	alert("Logoff now");
+	localStorage.removeItem("login");
+	localStorage.removeItem("id");
+    localStorage.removeItem("favlength");
+});
+
+
+}); //document rdy close
+
+</script>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark navbar-fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="#">Start Shopping!</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="#">Home
+              <span class="sr-only">(current)</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="http://127.0.0.1:9999/Fav">Cart</a>
+          </li>
+          
+          <li class="nav-item">
+			<a id="logoff" class="loginID nav-link" href="http://127.0.0.1:9999/kk"> </a>
+          </li>
+        </ul>
+      
+	
+  </nav>
+
+  <!-- Page Content -->
+  <div class="container">
+
+    <div class="row">
+
+      <div class="col-lg-3">
+        <h1 class="my-4">Shop Name</h1>
+		<h1> Graham's Fashion </h1>
+        <div class="list-group">
+		  	  
+		  <a> Weather :</a>
+		  <a class="col-xs-12" id="cityname"></a>
+		  <a class="weather-descr col-xs-12"></a>
+		  <a class="temp col-xs-12"></a>
+	      <a class="pressure col-xs-12"></a>
+		  <a class="wind-spd col-xs-12"></a>
+	
+	
+        </div>
+
+      </div>
+      <!-- /.col-lg-3 -->
+
+      <div class="col-lg-9">
+
+        <div id="carouselExampleIndicators" class="carousel slide my-4" data-ride="carousel">
+          <ol class="carousel-indicators">
+            <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+            <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+            <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+          </ol>
+          <div class="carousel-inner" role="listbox">
+            <div class="carousel-item active">
+              <img class="d-block img-fluid" src="img/slide1.png" alt="First slide">
+            </div>
+            <div class="carousel-item">
+              <img class="d-block img-fluid" src="img/slide2.png" alt="Second slide">
+            </div>
+            <div class="carousel-item">
+              <img class="d-block img-fluid" src="img/slide3.png" alt="Third slide">
+            </div>
+          </div>
+          <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+          </a>
+          <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+          </a>
+        </div>
+
+        <div class="row">
+
+          <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+              <a href="#"><img class="card-img-top" src="img/item1.png" alt=""></a>
+              <div class="card-body">
+                <h4 class="card-title">
+                  <a href="#">Item One</a>
+                </h4>
+                <h5>$214.99</h5>
+                <p class="card-text">A classic sheath dress in menswear-inspired glen plaid that will become your go-to for 
+				moments when you want to look polished and professional.</p>
+              </div>
+              <div class="card-footer">
+                <small class="text-muted">&#9733; &#9733; &#9733; &#9733; &#9734;</small>
+				<button class="addfav" value="1" >ADD</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+              <a href="#"><img class="card-img-top" src="img/item2.png" alt=""></a>
+              <div class="card-body">
+                <h4 class="card-title">
+                  <a href="#">Item Two</a>
+                </h4>
+                <h5>$39.99</h5>
+                <p class="card-text">Introducing the Parke blazer...your new favorite layer, 
+				featuring a cool fit and easy-to-move-in stretch wool we found at Tollegno 1900 
+				(est. 1862, it's one of Italy's oldest mills). </p>
+              </div>
+              <div class="card-footer">
+                <small class="text-muted">&#9733; &#9733; &#9733; &#9733; &#9734;</small>
+				<button class="addfav" value="2" >ADD</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+              <a href="#"><img class="card-img-top" src="img/item3.png" alt=""></a>
+              <div class="card-body">
+                <h4 class="card-title">
+                  <a href="#">Item Three</a>
+                </h4>
+                <h5>$24.99</h5>
+                <p class="card-text">Feminine and fitted (but not too fitted), with functional buttons on the wrists and a pretty peplum flounce in the back. 
+				Pair with our matching high-rise Cameron pant for a modern take on a suit.</p>
+              </div>
+              <div class="card-footer">
+                <small class="text-muted">&#9733; &#9733; &#9733; &#9733; &#9734;</small>
+				<button class="addfav" value="3" >ADD</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+              <a href="#"><img class="card-img-top" src="img/item4.png" alt=""></a>
+              <div class="card-body">
+                <h4 class="card-title">
+                  <a href="#">Item Four</a>
+                </h4>
+                <h5>$28.99</h5>
+                <p class="card-text">A subtle ruffle and tie detail at the neck make this sweet floral
+				midi dress a no-brainer for all those just-a-little-dressy occasions.</p>
+              </div>
+              <div class="card-footer">
+                <small class="text-muted">&#9733; &#9733; &#9733; &#9733; &#9734;</small>
+				<button class="addfav" value="4" >ADD</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+              <a href="#"><img class="card-img-top" src="img/item5.png" alt=""></a>
+              <div class="card-body">
+                <h4 class="card-title">
+                  <a href="#">Item Five</a>
+                </h4>
+                <h5>$54.99</h5>
+                <p class="card-text">Looking for your go-to sweater for chilly days? Look no further: The classic cable knit, 
+				flattering side slits and high neck of this knit will have you reaching for this one again and again.</p>
+              </div>
+              <div class="card-footer">
+                <small class="text-muted">&#9733; &#9733; &#9733; &#9733; &#9734;</small>
+				<button class="addfav" value="5" >ADD</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+              <a href="#"><img class="card-img-top" src="img/item6.png" alt=""></a>
+              <div class="card-body">
+                <h4 class="card-title">
+                  <a href="#">Item Six</a>
+                </h4>
+                <h5>$36.99</h5>
+                <p class="card-text">Leather buttons and a standing collar add even more charm to this cozy balloon sleeve cardigan. 
+				Details we love: the classic cable knit design and ribbed hems.</p>
+              </div>
+              <div class="card-footer">
+                <small class="text-muted">&#9733; &#9733; &#9733; &#9733; &#9734;</small>
+				<button class="addfav" value="6" >ADD</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <!-- /.row -->
+
+      </div>
+      <!-- /.col-lg-9 -->
+
+    </div>
+    <!-- /.row -->
+
+  </div>
+  <!-- /.container -->
+
+  <!-- Footer -->
+  <footer class="py-5 bg-dark">
+    <div class="container">
+      <p class="m-0 text-center text-white">Copyright &copy; Your Website 2019</p>
+    </div>
+    <!-- /.container -->
+  </footer>
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>
